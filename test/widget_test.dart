@@ -1,30 +1,23 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Basic smoke test for the Malayalam wall-calendar app.
 
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:malayalam_calendar/core/utils/malayalam_numerals.dart';
 import 'package:malayalam_calendar/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Wall calendar renders the current month header', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: MalayalamCalendarApp()));
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // The large centred Gregorian day "1" should appear at least once.
+    expect(find.text('1'), findsWidgets);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('Malayalam numerals convert correctly', () {
+    expect(MalayalamNumerals.fromInt(0), '\u0D66');
+    expect(MalayalamNumerals.fromInt(15), '\u0D67\u0D6B');
+    expect(MalayalamNumerals.fromInt(2026), '\u0D68\u0D66\u0D68\u0D6C');
   });
 }
